@@ -33,11 +33,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install dependencies inside Docker container
-        run: |
-          docker run --rm python:${{ matrix.python-version }}-slim pip install --upgrade pip
-          docker run --rm -v $(pwd):/app python:${{ matrix.python-version }}-slim pip install -r requirements.txt
-
       - name: Build Docker image 
         run: |
           docker build -t app .
