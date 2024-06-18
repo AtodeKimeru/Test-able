@@ -1,13 +1,17 @@
 FROM python:3.10.14-alpine3.20
 
-RUN mkdir app
+ENV PYTHONUNBUFFERED=1
 
-RUN pip install --upgrade pip
+WORKDIR /app
+
+RUN apk update \
+    && apk add --no-cache gcc musl-dev postgresql-dev \
+    python3-dev libffi-dev && pip install --upgrade pip
+
+COPY app/requirements.txt ./
 
 RUN pip install -r requirements.txt
 
-COPY /app /app
+COPY app/ ./
 
-EXPOSE 8000
-
-CMD ["gunicorn", "app.wsgi:core", "--bind 0.0.0.0:8000"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
